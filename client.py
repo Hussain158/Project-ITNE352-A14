@@ -32,19 +32,19 @@ def headline_search(cs):
         msg = f"1.{option}.{criteria}\n"
         send(msg,cs)
     if option == 2:
-        criteria = input("Enter category: (business, entertainment, general, health, science, sports, technology)\n")
-        msg = f"1.{option}.{criteria}\n"
+        criteria = input("Enter category: (business, entertainment, general, health, science, sports, technology) = \n")
         if criteria != "business" and criteria!= "entertainment" and criteria!= "general" and criteria!= "health" and criteria!= "science" and criteria!= "sports" and criteria!= "technology":
             print("Invalid Option")
             return
         msg = f"1.{option}.{criteria}\n"
         send(msg,cs)
     if option == 3:
-        criteria = input("Enter country code: (au, nz, ca, ae, sa, gb, us, eg, ma)\n")
-        msg = f"1.{option}.{criteria}\n"
+        criteria = input("Enter country code: (au, nz, ca, ae, sa, gb, us, eg, ma) = \n")
         if criteria != "au" and criteria!= "nz" and criteria!= "ca" and criteria!= "ae" and criteria!= "sa" and criteria!= "gb" and criteria!= "us" and criteria and criteria!= "eg" and criteria!= "ma":
             print("Invalid Option")
             return
+        msg = f"1.{option}.{criteria}\n"
+        send(msg,cs)
     if option == 4:
         msg = f"1.{option}\n"
         send(msg,cs)
@@ -54,6 +54,7 @@ def headline_search(cs):
         print ("Invalid Option")
         return
     receive(cs)
+    return
         
 def list_of_sources(cs):
     print("1.Search by category\n")
@@ -62,13 +63,37 @@ def list_of_sources(cs):
     print("4.List all\n")
     print("5.Back to the main menu\n")
     option = input("Choose an option = \n")
-    if option in (1,2,3,4):
-        send(option,cs)
+    if option == 1:
+        criteria = input("Enter category: (business, entertainment, general, health, science, sports, technology) = \n")
+        if criteria != "business" and criteria!= "entertainment" and criteria!= "general" and criteria!= "health" and criteria!= "science" and criteria!= "sports" and criteria!= "technology":
+            print("Invalid Option")
+            return
+        msg = f"2.{option}.{criteria}\n"
+        send(msg,cs)
+    if option == 2:
+        criteria = input("Enter country code: (au, nz, ca, ae, sa, gb, us, eg, ma) = \n")
+        if criteria!= "au" and criteria!= "nz" and criteria!= "ca" and criteria!= "ae" and criteria!= "sa" and criteria!= "gb" and criteria!= "us" and criteria and criteria!= "eg" and criteria!= "ma":
+            print("Invalid Option")
+            return
+        msg = f"2.{option}.{criteria}\n"
+        send(msg,cs)
+    if option == 3:
+        criteria = input("Enter language code: (ar,en) = \n")
+        if criteria!= "ar" and criteria!= "en":
+            print("Invalid Option")
+            return
+        msg = f"2.{option}.{criteria}\n"
+        send(msg,cs)
+    if option == 4:
+        msg = f"2.{option}\n"
+        send(msg,cs)
     if option == 5:
         main_menu(cs)
     else:
         print ("Invalid Option")
         return
+    receive(cs)
+    return
     
 def start_client():
     print("---------- Welcome to news API ----------\n")
