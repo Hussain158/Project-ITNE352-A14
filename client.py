@@ -14,6 +14,8 @@ def main_menu(cs):
         list_of_sources(cs)
     elif (option == 3):
         cs.close()
+    else:
+        print ("Invalid Option")
 
 def headline_search(cs):
     print("1.Search for keywords\n")
@@ -26,6 +28,8 @@ def headline_search(cs):
         send(option,cs)
     elif option == 5:
         main_menu(cs)
+    else:
+        print ("Invalid Option")
         
 def list_of_sources(cs):
     print("1.Search by category\n")
@@ -38,6 +42,8 @@ def list_of_sources(cs):
         send(option,cs)
     elif option == 5:
         main_menu(cs)
+    else:
+        print ("Invalid Option")
     
 def start_client():
     print("---------- Welcome to news API ----------\n")
