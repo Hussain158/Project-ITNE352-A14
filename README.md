@@ -1,4 +1,4 @@
-Project title: Multithreaded News Client/Server Information System
+#Project title: Multithreaded News Client/Server Information System
 Project description: 
 Semester: 02
 Group:-
