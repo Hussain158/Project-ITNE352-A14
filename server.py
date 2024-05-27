@@ -8,7 +8,6 @@ from newsapi import NewsApiClient
 api = NewsApiClient(api_key='a86d8a517347451cb5335ce0b0f09bff')
 
 def get_sources(request, lower_option, client_name):
-    #retrieve sources from API
     if lower_option == '1':
         data = api.get_sources(category=request)
     elif lower_option == '2':
@@ -17,15 +16,12 @@ def get_sources(request, lower_option, client_name):
         data = api.get_sources(language=request)
     elif lower_option == '4':
         data = api.get_sources()
-
-    #Save only the first 15 sources in the json file
     data["sources"] = data["sources"][0:15]
     with open(os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "database"),
                             f'A14_{client_name}_2.{lower_option}.json'), 'w') as outfile:
         json.dump(data, outfile)
 
 def get_headlines(request, lower_option, client_name):
-    #retrieve headlines from API
     if lower_option == '1':
         data = api.get_top_headlines(q=request)
     elif lower_option == '2':
