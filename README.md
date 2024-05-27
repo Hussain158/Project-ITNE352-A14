@@ -62,6 +62,16 @@ python gui.py
 
 ### The scripts:
 #### Server:
+
+* The imported packages that are used by the server are:-
+
+```
+import socket
+import threading
+import json
+import os
+from newsapi import NewsApiClient
+```
 * The following server code will firstly checks if the current module is the main module being executed directly if it is true it will execute the StartupOfServer() function.The function will assign an IP address and port number to the server and bind them with the client and it will listen to at maximum of 3 different clients at a time then it will print a message containing its IP address and port number then while there is no que on the clients it will accept the client and start threading and go to the client_handling function.
 ```
 if __name__ == "__main__":
@@ -150,7 +160,11 @@ def get_headlines(request, lower_option, client_name):
         json.dump(data, outfile)
 ```
 #### client:
-
+* The imported packages that are used by the client are:-
+```
+import socket
+import json
+```
 * The following client code will firstly checks if the current module is the main module being executed directly if it is true it will execute the mainmenu() function. The function will have the server IP address and port number and will connect to the server and prints the connection then it will ask the user to enter their username and send it to the server using the send_client() function then while the client enters a username we will print 3 options 1- Search for headline 2- Search for sources and 3- Exit the program the first one will opens headline_menu(cs) function the second will open source_menu(cs) function the third will exit the client else if the client entered something else it will print Invalid option and run the code again.
 
 ```
@@ -359,6 +373,15 @@ def send_client(option, cs):
 
 ### Additional concept:
 * Grafical user interface (graphical_user_interface.py):
+
+The imported pakages used in the GUI are:-
+
+```
+import socket
+import json
+import tkinter as tk
+from tkinter import ttk, messagebox, simpledialog
+```
 
 The GUI in the provided code creates a news client interface. Upon launching the program, it establishes a socket connection with a server. The tkinter window appears, prompting the user to enter a username. Once the username is provided, it is sent to the server. The main menu is then displayed, offering different options for the user. Depending on the selected option, the GUI updates accordingly by clearing the window and presenting relevant labels and buttons. The user's input, captured through button clicks or dialog boxes, triggers the corresponding function to handle the choice. The option is sent to the server via the socket connection. The server processes the request and sends back the requested data, which is then displayed in the GUI. Additional features include selecting categories, countries, and languages, as well as viewing details of specific items. "Back" buttons allow the user to navigate through different menus and options. The program runs until the user chooses to quit, closing the socket connection. Overall, the GUI provides a user-friendly interface for interacting with the news client, allowing seamless searching and exploration of headlines and sources.
 
