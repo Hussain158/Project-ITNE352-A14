@@ -1,156 +1,185 @@
 import socket
 import json
-
-cat = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-country = ["au", "nz", "ca", "ae", "sa", "gb", "us", "eg", "ma"]
-language = ["ar", "en"]
-
-
-def send(option, cs):
-    cs.send(option.encode("utf-8"))
-
-
-def main_menu(cs):
-    print("1.Search headlines\n")
-    print("2.List of scources\n")
-    print("3.Quit\n")
-    option = int(input("Choose an option = \n"))
-    if option == 1:
-        headline_search(cs)
-    if option == 2:
-        list_of_sources(cs)
-    if option == 3:
-        cs.close()
-    else:
-        print("Invalid Option")
-        return
-
-
-def headline_search(cs):
-    print("1.Search for keywords\n")
-    print("2.Search by category\n")
-    print("3.Search by country\n")
-    print("4.List all new headlines\n")
-    print("5.Back to main menu\n")
-    option = input("Choose an option = \n")
-    if option == 1:
-        criteria = input("Enter keyword: \n")
-        msg = f"1.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 2:
-        criteria = input("Enter category: (business, entertainment, general, health, science, sports, technology) = \n")
-        if criteria not in cat:
-            print("Invalid Option")
-            return
-        msg = f"1.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 3:
-        criteria = input("Enter country code: (au, nz, ca, ae, sa, gb, us, eg, ma) = \n")
-        if criteria not in country:
-            print("Invalid Option")
-            return
-        msg = f"1.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 4:
-        msg = f"1.{option}\n"
-        send(msg, cs)
-    if option == 5:
-        main_menu(cs)
-    else:
-        print("Invalid Option")
-        return
-    recieve_headline(cs)
-    return
-
-
-def list_of_sources(cs):
-    print("1.Search by category\n")
-    print("2.Search by country\n")
-    print("3.Search by language\n")
-    print("4.List all\n")
-    print("5.Back to the main menu\n")
-    option = input("Choose an option = \n")
-    if option == 1:
-        criteria = input("Enter category: (business, entertainment, general, health, science, sports, technology) = \n")
-        if criteria not in cat:
-            print("Invalid Option")
-            return
-        msg = f"2.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 2:
-        criteria = input("Enter country code: (au, nz, ca, ae, sa, gb, us, eg, ma) = \n")
-        if criteria not in country:
-            print("Invalid Option")
-            return
-        msg = f"2.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 3:
-        criteria = input("Enter language code: (ar,en) = \n")
-        if criteria not in language:
-            print("Invalid Option")
-            return
-        msg = f"2.{option}.{criteria}\n"
-        send(msg, cs)
-    if option == 4:
-        msg = f"2.{option}\n"
-        send(msg, cs)
-    if option == 5:
-        main_menu(cs)
-    else:
-        print("Invalid Option")
-        return
-    recieve_scources(cs)
-    return
-
-
-def recieve_headline(cs):
-    print("Recieving headlines please wait ...")
-    headline_D = cs.recv(100000).decode("utf-8")
-    headline_L = json.loads(headline_D)
-    print("Recieved headline data :-")
-    for i, item in enumerate(headline_L['articles']):
-        print(f"{i + 1}. {item['title']} - {item['description']}")
-    sel = int(input("Enter the article number = \n"))
-    sel_headline = headline_L['articles'][sel-1]
-    print(f"Article {sel} Details:")
-    print(f"Source: {sel_headline['source']['name']}")
-    print(f"Author: {sel_headline['author']}")
-    print(f"Title: {sel_headline['title']}")
-    print(f"URL: {sel_headline['url']}")
-    print(f"Description: {sel_headline['description']}")
-    print(f"Published At: {sel_headline['publishedAt']}")
-    print(f"Content: {sel_headline['content']}")
-
-
-def recieve_scources(cs):
-    print("Receiving Sources please wait ...")
-    source_D = cs.recv(100000).decode
-    source_L = json.loads(source_D)
-    print("Recieved Sources data :-")
-    for i, item in enumerate(source_L['sources']):
-        print(f"{i+1}.{item['name']}")
-    sel = int(input("Enter the source number ="))
-    sel_source = source_L['sources'][sel-1]
-    print(f"Article {sel} Details:")
-    print(f"Source: {sel_source['source']['name']}")
-    print(f"Author: {sel_source['author']}")
-    print(f"Title: {sel_source['title']}")
-    print(f"URL: {sel_source['url']}")
-    print(f"Description: {sel_source['description']}")
-    print(f"Published At: {sel_source['publishedAt']}")
-    print(f"Content: {sel_source['content']}")
-
-
-def start_client():
-    print("---------- Welcome to news API ----------\n")
-    print("Connecting to server ..\n")
+def main_menu():
+    server_ip = "127.0.0.1"
+    server_port = 4926
     cs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    cs.connect(("127.0.0.1", 5349))
-    print("----------Server Connected Successfully ----------\n")
-    user_name = input("Enter your username: \n")
-    cs.send(user_name.encode("utf-8"))
-    main_menu(cs)
+    cs.connect((server_ip, server_port))
+    print(f"Connected to server {server_ip}:{server_port}")
+    username = input("Enter your username: ")
+    send_client(username, cs)
+    while True:
+        print("###################################################\n")
+        print(f" welcome {username} please choose the desired option:  \n")
+        print("1- search for a specific headlines")
+        print("----------------------------------------------------")
+        print("2- search for a specific list of sources")
+        print("----------------------------------------------------")
+        print("3- Quit the program")
+        print("----------------------------------------------------")
+        option = int(input("Enter your option: "))
+        print("###################################################\n")
+        if option == 1:
+            headline_menu(cs)
+        elif option == 2:
+            sources_menu(cs)
+        elif option == 3:
+            print("goodbye, you are Quitting the program...")
+            cs.close()
+            break
+        else:
+            print("Invalid option. Please chooce and option from the list above")
+def headline_menu(cs):
+    #printing headline options and asking user to pick one.
+    print("1- Search for Keywords")
+    print("----------------------------------------------------")
+    print("2- Search by Category")
+    print("----------------------------------------------------")
+    print("3- Search by Country")
+    print("----------------------------------------------------")
+    print("4- List all New Headlines")
+    print("----------------------------------------------------")
+    print("5- Back to Main Menu")
+    print("----------------------------------------------------")
+    lower_option = int(input("Enter your option: "))
+    print("###################################################\n")
+    if lower_option == 1:
+        request = input("Enter a pecific keword you want to search about: ")
+        option = f"1.{lower_option}.{request}"
+        send_client(option, cs)
+        headlines(cs)
+    elif lower_option == 2:
+        print(["entertainment","business" , "general", "technology","sports", "science" ,"health" ])
+        request = input(f"\nEnter the desired category: ")
+        if request not in cat:
+            print("sorry, Invalid category choose from the list above")
+            return
+        option = f"1.{lower_option}.{request}"
+        send_client(option, cs)
+        headlines(cs)
+    elif lower_option == 3:
+        request = input(f"Enter country: ['eg', 'nz', 'ca', 'ae', 'sa', 'gb', 'us','au' , 'ma']")
+        if request not in regions:
+            print("sorry, Invalid country choose from the list above")
+            return
+        option = f"1.{lower_option}.{request}"
+        send_client(option, cs)
+        headlines(cs)
+    elif lower_option == 4:
+        option = f"1.{lower_option}.null"
+        send_client(option, cs)
+        headlines(cs)
+    elif lower_option == 5:
+        return
+    else:
+        print("Invalid option. Please chooce and option from the list above")
+        return
+def sources_menu(cs):
+    print("Select the desired option: ")
+    print("1- Search by category")
+    print("----------------------------------------------------")
+    print("2- Search by country")
+    print("----------------------------------------------------")
+    print("3- Search by languages")
+    print("----------------------------------------------------")
+    print("4- List all the available sources")
+    print("----------------------------------------------------")
+    print("5- Back to Main Menu")
+    print("----------------------------------------------------")
+    lower_option = int(input("Enter your option: "))
+    print("###################################################\n")
+    if lower_option == 1:
+        request = input(f"Enter category: ['entertainment','business' , 'general', 'technology','sports', 'science' ,'health' ]")
+        if request not in cat:
+            print("sorry, Invalid category choose from the list above")
+            return
+        option = f"2.{lower_option}.{request}"
+        send_client(option, cs)
+        resources(cs)
+    elif lower_option == 2:
+        request = input(f"Enter country: ['eg', 'nz', 'ca', 'ae', 'sa', 'gb', 'us','au' , 'ma']")
+        if request not in regions:
+            print("sorry, Invalid country choose from the list above")
+            return
+        option = f"2.{lower_option}.{request}"
+        send_client(option, cs)
+        resources(cs)
+    elif lower_option == 3:
+        request = input(f"Enter language:['ar', 'en']")
+        if request not in languages:
+            print("sorry, Invalid language choose from the list above")
+            return
+        option = f"2.{lower_option}.{request}"
+        send_client(option, cs)
+        resources(cs)
+    elif lower_option == 4:
+        option = f"2.{lower_option}.null"
+        send_client(option, cs)
+        resources(cs)
+    if lower_option == 5:
+        return
+    else:
+        print("Invalid option. Please chooce and option from the list above")
+        return
 
+
+def headlines(cs):
+    print("please wait we are processing you request:\n")
+    headlines_data = cs.recv(200000).decode()
+    list = json.loads(headlines_data)
+    print("the reached headlines:\n")
+    print("----------------------------------------------------")
+    for index, item in enumerate(list['articles']):
+        print(f"{index + 1}. {item['title']} - {item['description']}\n \n")
+    headNo = int(input("Enter the article number that you want to its details: "))
+    print("################################################################")
+    desired_headline = list['articles'][headNo - 1]
+    print(f"""Article {headNo} Details:
+        Source: {desired_headline['source']['name']}
+        ----------------------------------------------------
+        Author: {desired_headline['author']}
+        ----------------------------------------------------
+        Title: {desired_headline['title']}
+        ----------------------------------------------------
+        URL: {desired_headline['url']}
+        ----------------------------------------------------
+        Description: {desired_headline['description']}
+        ----------------------------------------------------
+        Published At: {desired_headline['publishedAt']}
+        """)
+def resources(cs):
+    print("please wait we are processing you request:\n")
+    sources_data = cs.recv(200000)
+    sources_data.decode()
+    list = json.loads(sources_data)
+    print("the reached sources:\n")
+    print("----------------------------------------------------")
+    for index, item in enumerate(list['sources']):
+        print(f"{index + 1}. {item['name']}")
+    sourceNO = int(input("Enter the source number that you want to access its details:  "))
+    print("################################################################")
+    desired_source = list['sources'][sourceNO - 1]
+    print(f"""Source {sourceNO} Details:
+        ----------------------------------------------------
+        Source: {desired_source['name']}
+        ----------------------------------------------------
+        Country: {desired_source['country']}
+        ----------------------------------------------------
+        Description: {desired_source['description']}
+        ----------------------------------------------------
+        URL: {desired_source['url']}
+        ----------------------------------------------------
+        Category: {desired_source['category']}
+        ----------------------------------------------------
+        Language: {desired_source['language']}
+        """)
+def send_client(option, cs):
+    cs.send(option.encode())
+
+cat = ["entertainment","business" , "general", "technology","sports", "science" ,"health" ]
+regions = ["eg", "nz", "ca", "ae", "sa", "gb", "us","au" , "ma"]
+languages = ["ar", "en"]
 
 if __name__ == "__main__":
-    start_client()
+    #starting the client
+    main_menu()
